@@ -44,6 +44,12 @@
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // osulaunch
@@ -52,7 +58,7 @@
             this.osulaunch.Font = new System.Drawing.Font("PhrasticMedium", 17.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.osulaunch.ForeColor = System.Drawing.SystemColors.ActiveBorder;
             this.osulaunch.Image = ((System.Drawing.Image)(resources.GetObject("osulaunch.Image")));
-            this.osulaunch.Location = new System.Drawing.Point(254, 255);
+            this.osulaunch.Location = new System.Drawing.Point(477, 287);
             this.osulaunch.Name = "osulaunch";
             this.osulaunch.Size = new System.Drawing.Size(178, 51);
             this.osulaunch.TabIndex = 0;
@@ -140,6 +146,7 @@
             // 
             // comboBox2
             // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox2.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Location = new System.Drawing.Point(492, 182);
@@ -188,12 +195,75 @@
             this.checkBox4.Text = "Songsフォルダの保存";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Location = new System.Drawing.Point(181, 275);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(130, 16);
+            this.checkBox5.TabIndex = 17;
+            this.checkBox5.Text = "カスタム解像度の使用";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("MS UI Gothic", 20F);
+            this.label5.Location = new System.Drawing.Point(17, 297);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(132, 27);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "Resolution";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.textBox2.Location = new System.Drawing.Point(181, 297);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(110, 27);
+            this.textBox2.TabIndex = 19;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.textBox3.Location = new System.Drawing.Point(332, 297);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(110, 27);
+            this.textBox3.TabIndex = 20;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Noto Sans JP", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label6.Location = new System.Drawing.Point(295, 295);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(33, 29);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "×";
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Location = new System.Drawing.Point(180, 330);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(131, 16);
+            this.checkBox6.TabIndex = 22;
+            this.checkBox6.Text = "フルスクリーン時の変更";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(691, 318);
+            this.ClientSize = new System.Drawing.Size(691, 385);
+            this.Controls.Add(this.checkBox6);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.checkBox5);
             this.Controls.Add(this.checkBox4);
             this.Controls.Add(this.comboBox3);
             this.Controls.Add(this.checkBox3);
@@ -233,6 +303,12 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.ComboBox comboBox3;
         private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBox6;
     }
 }
 

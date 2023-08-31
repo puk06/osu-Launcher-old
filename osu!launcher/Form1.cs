@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Newtonsoft.Json;
 using System.Drawing;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace osu_launcher
 {
@@ -39,6 +40,13 @@ namespace osu_launcher
             label4.ForeColor = Color.FromArgb(255, 255, 255);
             label4.BackColor = Color.Transparent;
 
+            //lavel5の設定
+            label5.ForeColor = Color.FromArgb(255, 255, 255);
+            label5.BackColor = Color.Transparent;
+
+            //lavel6の設定
+            label6.BackColor = Color.Transparent;
+
             //checkBox1,2の設定
             checkBox1.ForeColor = Color.FromArgb(255, 255, 255);
             checkBox1.BackColor = Color.Transparent;
@@ -49,11 +57,21 @@ namespace osu_launcher
             checkBox3.BackColor = Color.Transparent;
             checkBox4.ForeColor = Color.FromArgb(255, 255, 255);
             checkBox4.BackColor = Color.Transparent;
+            checkBox5.ForeColor = Color.FromArgb(255, 255, 255);
+            checkBox5.BackColor = Color.Transparent;
+            checkBox6.ForeColor = Color.FromArgb(255, 255, 255);
+            checkBox6.BackColor = Color.Transparent;
 
             comboBox3.Text = "Songs";
             comboBox3.Enabled = false;
 
             checkBox4.Enabled = false;
+
+            textBox2.Enabled = false;
+            textBox3.Enabled = false;
+            checkBox6.Enabled = false;
+
+
 
             if (textBox1.Text == "")
             {
@@ -132,6 +150,17 @@ namespace osu_launcher
                     serverlocation = "";
                 }
 
+                if (comboBox2.Text == "")
+                {
+                    MessageBox.Show("Configファイルを指定してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (textBox1.Text != "" && comboBox2.Text == "")
+                {
+                    MessageBox.Show("フォルダ内からConfigファイルが見つかりませんでした。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
                 if (checkBox1.Checked) //サーバーの登録チェックボックスがチェックされている場合
                 {
                     //サーバーの登録
@@ -184,7 +213,7 @@ namespace osu_launcher
 
                 if (checkBox3.Checked)
                 {
-                    string filePath = $"{osulocation}/{comboBox2.Text}"; // ファイルのパスを指定してください
+                    string filePath = $"{osulocation}/{comboBox2.Text}"; // ファイルのパスを指定
                     string newText = "BeatmapDirectory = " + comboBox3.Text;
 
                     try
@@ -204,7 +233,7 @@ namespace osu_launcher
                     }
                     catch (Exception)
                     {
-                        MessageBox.Show("置換に失敗しました。", "失敗", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Songsフォルダの変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
@@ -229,7 +258,76 @@ namespace osu_launcher
                     }
                     catch (Exception)
                     {
-                        MessageBox.Show("置換に失敗しました。", "失敗", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Songsフォルダの変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                if (checkBox5.Checked)
+                {
+                    int n;
+                    bool isNumerictextbox3 = int.TryParse(textBox3.Text, out n);
+                    bool isNumerictextbox2 = int.TryParse(textBox2.Text, out n);
+
+                    if (!isNumerictextbox2 | !isNumerictextbox3)
+                    {
+                        MessageBox.Show("解像度の欄には数値のみを入力してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    string filePath = $"{osulocation}/{comboBox2.Text}";
+                    if (checkBox6.Checked)
+                    {
+                        try
+                        {
+                            string[] lines = File.ReadAllLines(filePath);
+
+                            for (int i = 0; i < lines.Length; i++)
+                            {
+                                if (lines[i].Contains("HeightFullscreen = "))
+                                {
+                                    lines[i] = $"HeightFullscreen = " + textBox3.Text;
+                                }
+                                if (lines[i].Contains("WidthFullscreen = "))
+                                {
+                                    lines[i] = $"WidthFullscreen = " + textBox2.Text;
+                                    break;
+                                }
+                            }
+
+                            File.WriteAllLines(filePath, lines);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("解像度の変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            string[] lines = File.ReadAllLines(filePath);
+
+                            for (int i = 0; i < lines.Length; i++)
+                            {
+                                if (lines[i].Contains("Height = "))
+                                {
+                                    lines[i] = $"Height = " + textBox3.Text;
+                                }
+                                if (lines[i].Contains("Width = "))
+                                {
+                                    lines[i] = $"Width = " + textBox2.Text;
+                                    break;
+                                }
+                            }
+
+                            File.WriteAllLines(filePath, lines);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("解像度の変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                     }
                 }
 
@@ -297,7 +395,17 @@ namespace osu_launcher
             }
 
             checkBox2.Enabled = textBox1.Text != locationstr;
-            string[] configFiles = Directory.GetFiles(locationstr, "osu!*.cfg");
+            string[] configFiles;
+            try
+            {
+                configFiles = Directory.GetFiles(textBox1.Text, "osu!*.cfg");
+            }
+            catch (Exception)
+            {
+                comboBox2.Text = "";
+                return;
+            }
+
             comboBox2.Items.Clear();
             foreach (string configFile in configFiles)
             {
@@ -307,7 +415,16 @@ namespace osu_launcher
                     comboBox2.Items.Add(fileName);
                 }
             }
-            comboBox2.Text = comboBox2.Items[0].ToString();
+
+            if (configFiles.Length == 0)
+            {
+                comboBox2.Text = "";
+            }
+            else
+            {
+                comboBox2.Text = comboBox2.Items[0].ToString();
+            }
+
         }
 
         private void button1_Click(object sender, EventArgs e) //自動取得ボタン
@@ -368,6 +485,22 @@ namespace osu_launcher
             JObject foldersarray = JObject.Parse(foldersdata);
             string[] folderarray = foldersarray["SongsFolder"].ToObject<string[]>();
             checkBox4.Enabled = !ArrayContains(folderarray, comboBox3.Text);
+        }
+
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox5.Checked)
+            {
+                textBox2.Enabled = true;
+                textBox3.Enabled = true;
+                checkBox6.Enabled = true;
+            }
+            else
+            {
+                textBox2.Enabled = false;
+                textBox3.Enabled = false;
+                checkBox6.Enabled = false;
+            }
         }
     }
 }

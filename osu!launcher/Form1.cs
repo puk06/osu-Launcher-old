@@ -1,506 +1,420 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Text;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Newtonsoft.Json.Linq;
-using System.IO;
 using Newtonsoft.Json;
-using System.Drawing;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Newtonsoft.Json.Linq;
 
 namespace osu_launcher
 {
     public partial class Form1 : Form
     {
-        private static Process _osuprocess;
+        private readonly PrivateFontCollection _fontCollection;
+        private readonly JObject _configFiles;
+        
         public Form1()
         {
+            _fontCollection = new PrivateFontCollection();
+            _fontCollection.AddFontFile("./Font/NotoSans-Regular.ttf");
+            _fontCollection.AddFontFile("./Font/NotoSans-Light.ttf");
             InitializeComponent();
 
-            //ウィンドウの設定
-            ResumeLayout(false);
-            PerformLayout();
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-            MinimizeBox = false;
-
-            //label1の設定
-            label1.ForeColor = Color.FromArgb(255, 255, 255);
-            label1.BackColor = Color.Transparent;
-
-            //label2の設定
-            label2.ForeColor = Color.FromArgb(255, 255, 255);
-            label2.BackColor = Color.Transparent;
-
-            //label3の設定 
-            label3.ForeColor = Color.FromArgb(255, 255, 255);
-            label3.BackColor = Color.Transparent;
-
-            //label4の設定
-            label4.ForeColor = Color.FromArgb(255, 255, 255);
-            label4.BackColor = Color.Transparent;
-
-            //lavel5の設定
-            label5.ForeColor = Color.FromArgb(255, 255, 255);
-            label5.BackColor = Color.Transparent;
-
-            //lavel6の設定
-            label6.BackColor = Color.Transparent;
-
-            //checkBox1,2の設定
-            checkBox1.ForeColor = Color.FromArgb(255, 255, 255);
-            checkBox1.BackColor = Color.Transparent;
-            checkBox1.Enabled = false;
-            checkBox2.ForeColor = Color.FromArgb(255, 255, 255);
-            checkBox2.BackColor = Color.Transparent;
-            checkBox3.ForeColor = Color.FromArgb(255, 255, 255);
-            checkBox3.BackColor = Color.Transparent;
-            checkBox4.ForeColor = Color.FromArgb(255, 255, 255);
-            checkBox4.BackColor = Color.Transparent;
-            checkBox5.ForeColor = Color.FromArgb(255, 255, 255);
-            checkBox5.BackColor = Color.Transparent;
-            checkBox6.ForeColor = Color.FromArgb(255, 255, 255);
-            checkBox6.BackColor = Color.Transparent;
-
-            comboBox3.Text = "Songs";
-            comboBox3.Enabled = false;
-
-            checkBox4.Enabled = false;
-
-            textBox2.Enabled = false;
-            textBox3.Enabled = false;
-            checkBox6.Enabled = false;
-
-
-
-            if (textBox1.Text == "")
-            {
-                checkBox2.Enabled = false;
-            }
-
-            //サーバー一覧を取得し、comboBox1に追加
-            StreamReader streamReader = new StreamReader("./serverdata.json", Encoding.GetEncoding("Shift_JIS"));
+            StreamReader streamReader = new StreamReader("data.json", Encoding.GetEncoding("Shift_JIS"));
             string str = streamReader.ReadToEnd();
             streamReader.Close();
-            JObject serverdata = JObject.Parse(str);
+            _configFiles = JObject.Parse(str);
 
-            //フォルダー一覧を取得し、comboBox3に追加
-            StreamReader folderReader = new StreamReader("./SongsFolder.json", Encoding.GetEncoding("Shift_JIS"));
-            string folderdata = folderReader.ReadToEnd();
-            streamReader.Close();
-            JObject foldersdata = JObject.Parse(folderdata);
-
-            //osu!のインストール先を取得
-            StreamReader osustreamReader = new StreamReader("./osulocation.txt", Encoding.GetEncoding("Shift_JIS"));
-            string locationstr = osustreamReader.ReadToEnd();
-            osustreamReader.Close();
-
-            //osu!のインストール先をtextBox1に、サーバーをcomboBox1に追加
-            comboBox1.Text = "osu!bancho";
-            textBox1.Text = locationstr;
-
-            //サーバー一覧をcomboBox1に追加
-            foreach (var server in serverdata["links"])
+            foreach (var server in _configFiles["links"])
             {
-                comboBox1.Items.Add(server);
+                serverList.Items.Add(server);
+            }
+            serverList.Text = (string)_configFiles["links"][0];
+            if (string.IsNullOrEmpty(serverList.Text))
+            {
+                saveServer.Enabled = false;
+                saveServer.Checked = false;
             }
 
-            foreach (var folder in foldersdata["SongsFolder"])
+            osuFolderbox.Text = (string)_configFiles["osuLocation"];
+            if (string.IsNullOrEmpty(osuFolderbox.Text))
             {
-                comboBox3.Items.Add(folder);
+                saveFolder.Enabled = false;
+                saveFolder.Checked = false;
             }
+
+            if (_configFiles["username"] == null)
+            {
+                saveUsername.Enabled = false;
+                saveUsername.Checked = false;
+            }
+            else
+            {
+                foreach (var username in _configFiles["username"])
+                {
+                    usernameBox.Items.Add(username);
+                }
+                usernameBox.Text = (string)_configFiles["username"][0];
+                if (string.IsNullOrEmpty(usernameBox.Text))
+                {
+                    saveUsername.Enabled = false;
+                    saveUsername.Checked = false;
+                }
+            }
+
+            foreach (var folder in _configFiles["SongsFolder"])
+            {
+                SongsFolderbox.Items.Add(folder);
+            }
+            SongsFolderbox.Text = (string)_configFiles["SongsFolder"][0];
+            if (!string.IsNullOrEmpty(SongsFolderbox.Text)) return;
+            SaveSongs.Enabled = false;
+            SaveSongs.Checked = false;
         }
 
         private void Osulaunch_pushed(object sender, EventArgs e)
         {
             try
             {
-                //osu!のインストール先を取得
-                StreamReader osustreamReader = new StreamReader("./osulocation.txt", Encoding.GetEncoding("Shift_JIS"));
-                string locationstr = osustreamReader.ReadToEnd();
-                osustreamReader.Close();
-
-                //osu!のインストール先とサーバーの指定(サーバーはプラベ鯖メインで考えてある)
-                string osulocation = locationstr.Replace("/osu!.exe", "");
-                string serverlocation = $"-devserver {comboBox1.Text}";
-
-                //osu!のインストール先の指定がない場合の処理
-                if (locationstr == "" && textBox1.Text == "") //osu!のインストール先が保存されてない、かつ指定されていない場合
+                string osulocation = osuFolderbox.Text;
+                string serverlocation = "-devserver " + serverList.Text;
+                
+                if (osulocation == "")
                 {
-                    MessageBox.Show(@"osu!のインストール先を指定してください。", "エラー");
-                    return;
-                }
-                else if (locationstr != "" && textBox1.Text == "") //osu!のインストール先が保存されている、かつ指定されていない場合
-                {
-                    osulocation = locationstr;
-                }
-                else if
-                    (locationstr != "" && textBox1.Text != "") //osu!のインストール先が保存されている、かつ指定されている場合。この場合は入力された方を優先して指定する
-                {
-                    osulocation = textBox1.Text.Replace("/osu!.exe", "");
-                }
-                else //とりあえず指定された方を優先して指定する
-                {
-                    osulocation = textBox1.Text.Replace("/osu!.exe", "");
-                }
-
-                if (comboBox1.Text == @"osu!bancho" |
-                    comboBox1.Text == "") //サーバーがosu!bancho、または指定されていない場合はサーバーの指定をせず、そのまま起動する
-                {
-                    serverlocation = "";
-                }
-
-                if (comboBox2.Text == "")
-                {
-                    MessageBox.Show("Configファイルを指定してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(@"osu!のインストール先を指定してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                if (textBox1.Text != "" && comboBox2.Text == "")
+                if (serverList.Text == @"osu!bancho" || serverList.Text == "") serverlocation = "";
+
+                if (saveServer.Checked)
                 {
-                    MessageBox.Show("フォルダ内からConfigファイルが見つかりませんでした。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (!ArrayContains(_configFiles["links"].ToObject<string[]>(), serverList.Text)) _configFiles["links"].Last.AddAfterSelf(serverList.Text);
+                    if (!serverList.Items.Contains(serverList.Text)) serverList.Items.Add(serverList.Text);
                 }
 
-                if (checkBox1.Checked) //サーバーの登録チェックボックスがチェックされている場合
+                if (saveUsername.Checked)
                 {
-                    //サーバーの登録
-                    StreamReader streamReader =
-                        new StreamReader("./serverdata.json", Encoding.GetEncoding("Shift_JIS"));
-                    string str = streamReader.ReadToEnd();
-                    streamReader.Close();
-                    JObject serverdata = JObject.Parse(str);
-                    serverdata["links"].Last.AddAfterSelf(comboBox1.Text);
-                    Encoding enc = Encoding.GetEncoding("Shift_JIS");
-                    StreamWriter writer = new StreamWriter("./serverdata.json", false, enc);
-                    string jsonData = JsonConvert.SerializeObject(serverdata, Formatting.Indented);
-                    writer.Write(jsonData);
-                    writer.Close();
-                    comboBox1.Items.Add(comboBox1.Text);
-                    MessageBox.Show("サーバーの登録が完了しました。", "サーバー登録完了");
-                    checkBox1.Checked = false;
-                }
-
-                if (checkBox4.Checked) //サーバーの登録チェックボックスがチェックされている場合
-                {
-                    //サーバーの登録
-                    StreamReader folderReader = new StreamReader("./SongsFolder.json", Encoding.GetEncoding("Shift_JIS"));
-                    string folderdata = folderReader.ReadToEnd();
-                    folderReader.Close();
-                    JObject foldersdata = JObject.Parse(folderdata);
-                    foldersdata["SongsFolder"].Last.AddAfterSelf(comboBox3.Text);
-                    Encoding enc = Encoding.GetEncoding("Shift_JIS");
-                    StreamWriter writer = new StreamWriter("./SongsFolder.json", false, enc);
-                    string jsonData = JsonConvert.SerializeObject(foldersdata, Formatting.Indented);
-                    writer.Write(jsonData);
-                    writer.Close();
-                    comboBox1.Items.Add(comboBox3.Text);
-                    checkBox4.Checked = false;
-                }
-
-                if (checkBox2.Checked) //osu!のインストール先の保存チェックボックスがチェックされている場合
-                {
-                    StreamWriter osustreamWriter =
-                        new StreamWriter("./osulocation.txt", false, Encoding.GetEncoding("Shift_JIS"));
-                    osustreamWriter.Write(textBox1.Text.Replace("/osu!.exe", ""));
-                    osustreamWriter.Close();
-                }
-
-                if (Process.GetProcessesByName("osu!").Length > 0) //osu!が既に起動している場合
-                {
-                    MessageBox.Show("osu!は既に起動中です。一度osu!を閉じてから起動してください。", "起動できません！");
-                    return;
-                }
-
-                if (checkBox3.Checked)
-                {
-                    string filePath = $"{osulocation}/{comboBox2.Text}"; // ファイルのパスを指定
-                    string newText = "BeatmapDirectory = " + comboBox3.Text;
-
-                    try
+                    if (_configFiles["username"] == null)
                     {
-                        string[] lines = File.ReadAllLines(filePath);
-
-                        for (int i = 0; i < lines.Length; i++)
-                        {
-                            if (lines[i].Contains("BeatmapDirectory = "))
-                            {
-                                lines[i] = newText;
-                                break;
-                            }
-                        }
-
-                        File.WriteAllLines(filePath, lines);
+                        _configFiles.Add("username", new JArray(usernameBox.Text));
                     }
-                    catch (Exception)
+                    else if (!ArrayContains(_configFiles["username"].ToObject<string[]>(), usernameBox.Text))
                     {
-                        MessageBox.Show("Songsフォルダの変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        _configFiles["username"].Last.AddAfterSelf(usernameBox.Text);
                     }
-                }
-                else
-                {
-                    string filePath = $"{osulocation}/{comboBox2.Text}"; // ファイルのパスを指定してください
-                    string newText = "BeatmapDirectory = Songs";
-
-                    try
-                    {
-                        string[] lines = File.ReadAllLines(filePath);
-
-                        for (int i = 0; i < lines.Length; i++)
-                        {
-                            if (lines[i].Contains("BeatmapDirectory = "))
-                            {
-                                lines[i] = newText;
-                                break;
-                            }
-                        }
-
-                        File.WriteAllLines(filePath, lines);
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("Songsフォルダの変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    
+                    if (!usernameBox.Items.Contains(usernameBox.Text)) usernameBox.Items.Add(usernameBox.Text);
                 }
 
-                if (checkBox5.Checked)
+                if (saveFolder.Checked) _configFiles["osuLocation"] = osuFolderbox.Text;
+                
+                if (advancedSetting.Checked && (usecustomResolution.Checked || changeSongs.Checked))
                 {
-                    int n;
-                    bool isNumerictextbox3 = int.TryParse(textBox3.Text, out n);
-                    bool isNumerictextbox2 = int.TryParse(textBox2.Text, out n);
-
-                    if (!isNumerictextbox2 | !isNumerictextbox3)
+                    string filePath = Path.Combine(osulocation, Config.Text);
+                    if (!File.Exists(filePath) || Config.Text == "")
                     {
-                        MessageBox.Show("解像度の欄には数値のみを入力してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Configファイルが見つかりませんでした。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    
+                    var resolutionHeightResult = int.TryParse(resolutionHeight.Text, out int resolutionHeightInt);
+                    var resolutionWidthResult = int.TryParse(resolutionWidth.Text, out int resolutionWidthInt);
+                    if (usecustomResolution.Checked && (!resolutionHeightResult || resolutionHeightInt <= 0 || !resolutionWidthResult || resolutionWidthInt <= 0))
+                    {
+                        MessageBox.Show("解像度の欄には正の整数のみを入力してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    
+                    if (Digit(resolutionHeightInt) > 4 || Digit(resolutionWidthInt) > 4)
+                    {
+                        MessageBox.Show("解像度の欄には4桁以下の正の整数のみを入力してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    string filePath = $"{osulocation}/{comboBox2.Text}";
-                    if (checkBox6.Checked)
-                    {
-                        try
-                        {
-                            string[] lines = File.ReadAllLines(filePath);
-
-                            for (int i = 0; i < lines.Length; i++)
-                            {
-                                if (lines[i].Contains("HeightFullscreen = "))
-                                {
-                                    lines[i] = $"HeightFullscreen = " + textBox3.Text;
-                                }
-                                if (lines[i].Contains("WidthFullscreen = "))
-                                {
-                                    lines[i] = $"WidthFullscreen = " + textBox2.Text;
-                                    break;
-                                }
-                            }
-
-                            File.WriteAllLines(filePath, lines);
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("解像度の変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
+                    if (changeSongs.Checked && !Directory.Exists(SongsFolderbox.Text) && SongsFolderbox.Text != "Songs")
+                    { 
+                        MessageBox.Show("指定されたSongsフォルダが見つかりませんでした。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
-                    else
+
+                    try
                     {
-                        try
+                        string[] lines = File.ReadAllLines(filePath);
+                        for (int i = 0; i < lines.Length; i++)
                         {
-                            string[] lines = File.ReadAllLines(filePath);
-
-                            for (int i = 0; i < lines.Length; i++)
-                            {
-                                if (lines[i].Contains("Height = "))
-                                {
-                                    lines[i] = $"Height = " + textBox3.Text;
-                                }
-                                if (lines[i].Contains("Width = "))
-                                {
-                                    lines[i] = $"Width = " + textBox2.Text;
-                                    break;
-                                }
-                            }
-
-                            File.WriteAllLines(filePath, lines);
+                            if (changeSongs.Checked && lines[i].Contains("BeatmapDirectory = ")) lines[i] = "BeatmapDirectory = " + SongsFolderbox.Text;
+                            if (usecustomResolution.Checked && changeonlyFullscreen.Checked && lines[i].Contains("HeightFullscreen = ")) lines[i] = "HeightFullscreen = " + resolutionHeightInt;
+                            if (usecustomResolution.Checked && changeonlyFullscreen.Checked && lines[i].Contains("WidthFullscreen = ")) lines[i] = "WidthFullscreen = " + resolutionWidthInt;
+                            if (usecustomResolution.Checked && !changeonlyFullscreen.Checked && lines[i].Contains("Height = ")) lines[i] = "Height = " + resolutionHeightInt;
+                            if (usecustomResolution.Checked && !changeonlyFullscreen.Checked && lines[i].Contains("Width = ")) lines[i] = "Width = " + resolutionWidthInt;
                         }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("解像度の変更に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
+                        File.WriteAllLines(filePath, lines);
+                        lines = null;
+                    } 
+                    catch
+                    {
+                        MessageBox.Show("Configファイルの書き込みに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    if (SaveSongs.Checked)
+                    {
+                        if (!ArrayContains(_configFiles["SongsFolder"].ToObject<string[]>(), SongsFolderbox.Text)) _configFiles["SongsFolder"].Last.AddAfterSelf(SongsFolderbox.Text);
+                        if (!SongsFolderbox.Items.Contains(SongsFolderbox.Text)) SongsFolderbox.Items.Add(SongsFolderbox.Text);
                     }
                 }
-
-                StreamReader serverReader =
-                    new StreamReader("./serverdata.json", Encoding.GetEncoding("Shift_JIS"));
-                string serverString = serverReader.ReadToEnd();
-                serverReader.Close();
-                JObject serverRawData = JObject.Parse(serverString);
-                string[] serverlistarray = serverRawData["links"].ToObject<string[]>();
-
-                checkBox2.Enabled = textBox1.Text != locationstr;
-                checkBox1.Enabled = !ArrayContains(serverlistarray, comboBox1.Text);
-
-                //osu!の起動
-                _osuprocess = new Process();
-                _osuprocess.StartInfo.FileName = $"{osulocation}/osu!.exe";
-                _osuprocess.StartInfo.Arguments = serverlocation;
-                _osuprocess.StartInfo.UseShellExecute = false;
-                _osuprocess.Start();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("起動できませんでした。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private bool ArrayContains(string[] array, string value)
-        {
-            foreach (string item in array)
-            {
-                if (item == value)
+                
+                if (usernameBox.Text != "") Clipboard.SetText(usernameBox.Text);
+                
+                if (saveServer.Checked || saveUsername.Checked || saveFolder.Checked || SaveSongs.Checked)
                 {
-                    return true;
+                    StreamWriter streamWriter = new StreamWriter("data.json", false, Encoding.GetEncoding("Shift_JIS"));
+                    streamWriter.Write(JsonConvert.SerializeObject(_configFiles, Formatting.Indented));
+                    streamWriter.Close();
+                    if (saveServer.Checked)
+                    {
+                        var result = ArrayContains(_configFiles["links"].ToObject<string[]>(), serverList.Text);
+                        saveServer.Enabled = !result;
+                        saveServer.Checked = !result;
+                    }
+
+                    if (saveUsername.Checked)
+                    {
+                        var result = ArrayContains(_configFiles["username"].ToObject<string[]>(), usernameBox.Text);
+                        saveUsername.Enabled = !result;
+                        saveUsername.Checked = !result;
+                    }
+
+                    if (saveFolder.Checked)
+                    {
+                        var result = (string)_configFiles["osuLocation"] == osuFolderbox.Text;
+                        saveFolder.Enabled = !result;
+                        saveFolder.Checked = !result;
+                    }
+
+                    if (SaveSongs.Enabled)
+                    {
+                        var result = ArrayContains(_configFiles["SongsFolder"].ToObject<string[]>(), SongsFolderbox.Text);
+                        SaveSongs.Enabled = !result;
+                        SaveSongs.Checked = !result;
+                    }
                 }
+                
+                if (Process.GetProcessesByName("osu!").Length != 0)
+                {
+                    MessageBox.Show("osu!は既に起動中です。一度osu!を閉じてから起動してください。", "起動できません！", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (!File.Exists(Path.Combine(osulocation, "osu!.exe")))
+                {
+                    MessageBox.Show("osu!.exeがフォルダ内から見つかりませんでした。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                
+                Process.Start(Path.Combine(osulocation, "osu!.exe"), serverlocation);
             }
-            return false;
+            catch
+            {
+                MessageBox.Show("osu!の起動に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void comboBox1_TextChanged(object sender, EventArgs e) //サーバーの登録チェックボックスの有効化
+        private static bool ArrayContains(IEnumerable<string> array, string value)
         {
-            //サーバーの登録
-            StreamReader streamReader = new StreamReader("./serverdata.json", Encoding.GetEncoding("Shift_JIS"));
-            string str = streamReader.ReadToEnd();
-            streamReader.Close();
-            JObject serverdata = JObject.Parse(str);
-            string[] serverarray = serverdata["links"].ToObject<string[]>();
-            if (comboBox1.Text == "")
-            {
-                checkBox1.Enabled = false;
-                return;
-            }
-            checkBox1.Enabled = !ArrayContains(serverarray, comboBox1.Text); //既に登録されている場合
+            return array.Any(item => item == value);
+        }
+        
+        private static int Digit(int num)
+        {
+            return num == 0 ? 1 : (int)Math.Log10(num) + 1;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void osuFolderbox_TextChanged(object sender, EventArgs e)
         {
-            //osu!のインストール先を取得
-            StreamReader osustreamReader = new StreamReader("./osulocation.txt", Encoding.GetEncoding("Shift_JIS"));
-            string locationstr = osustreamReader.ReadToEnd();
-            osustreamReader.Close();
-            if (textBox1.Text == "")
+            if (string.IsNullOrEmpty(osuFolderbox.Text))
             {
-                checkBox2.Enabled = false;
+                saveFolder.Text = "フォルダの保存";
+                Config.Items.Clear();
+                saveFolder.Enabled = false;
+                saveFolder.Checked = false;
                 return;
             }
 
-            checkBox2.Enabled = textBox1.Text != locationstr;
-            string[] configFiles;
-            try
+            if (!Directory.Exists(osuFolderbox.Text))
             {
-                configFiles = Directory.GetFiles(textBox1.Text, "osu!*.cfg");
-            }
-            catch (Exception)
-            {
-                comboBox2.Text = "";
+                saveFolder.Text = "フォルダが見つかりませんでした。";
+                Config.Items.Clear();
+                saveFolder.Enabled = false;
+                saveFolder.Checked = false;
                 return;
             }
-
-            comboBox2.Items.Clear();
+            
+            if (!File.Exists(Path.Combine(osuFolderbox.Text, "osu!.exe")))
+            {
+                saveFolder.Text = "フォルダ内にosu!.exeが見つかりませんでした。";
+                Config.Items.Clear();
+                saveFolder.Enabled = false;
+                saveFolder.Checked = false;
+                return;
+            }
+            
+            saveFolder.Text = "フォルダの保存";
+            var result = (string)_configFiles["osuLocation"] == osuFolderbox.Text;
+            saveFolder.Enabled = !result;
+            if (result && saveFolder.Checked) saveFolder.Checked = false;
+            
+            string[] configFiles = { };
+            configFiles = Directory.GetFiles(osuFolderbox.Text, "osu!*.cfg");
+            
+            Config.Items.Clear();
             foreach (string configFile in configFiles)
             {
                 string fileName = Path.GetFileName(configFile);
                 if (fileName != "osu!.cfg")
                 {
-                    comboBox2.Items.Add(fileName);
+                    Config.Items.Add(fileName);
                 }
             }
+            Config.Text = configFiles.Length == 0 ? "" : Config.Items[0].ToString();
+            configFiles = null;
+        }
 
-            if (configFiles.Length == 0)
+        private void automaticDetection_Click(object sender, EventArgs e)
+        {
+            var processes = Process.GetProcessesByName("osu!");
+            if (processes.Length == 0)
             {
-                comboBox2.Text = "";
+                MessageBox.Show("osu!.exeが見つかりませんでした。osu!を起動してからもう一度お試しください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string processPath = processes[0].MainModule.FileName;
+            osuFolderbox.Text = Path.GetDirectoryName(processPath);   
+        }
+
+        private void usecustomResolution_CheckedChanged(object sender, EventArgs e)
+        {
+            resolutionWidth.Enabled = usecustomResolution.Checked;
+            resolutionHeight.Enabled = usecustomResolution.Checked;
+            if (!usecustomResolution.Checked) changeonlyFullscreen.Checked = false;
+            changeonlyFullscreen.Enabled = usecustomResolution.Checked;
+        }
+        
+        private void changeSongs_CheckedChanged(object sender, EventArgs e)
+        {
+            SongsFolderbox.Enabled = changeSongs.Checked;
+            if (!changeSongs.Checked)
+            {
+                SaveSongs.Text = "Songsフォルダの保存";
+                SaveSongs.Enabled = false;
+                SaveSongs.Checked = false;
+            }
+            else if (!Directory.Exists(SongsFolderbox.Text) && SongsFolderbox.Text != "Songs")
+            {
+                SaveSongs.Text = "指定されたSongsフォルダが見つかりませんでした。";
+                SaveSongs.Enabled = false;
+                SaveSongs.Checked = false;
+            } 
+            else if (ArrayContains(_configFiles["SongsFolder"].ToObject<string[]>(), SongsFolderbox.Text))
+            {
+                SaveSongs.Text = "Songsフォルダの保存";
+                SaveSongs.Enabled = false;
+                SaveSongs.Checked = false;
             }
             else
             {
-                comboBox2.Text = comboBox2.Items[0].ToString();
+                SaveSongs.Text = "Songsフォルダの保存";
+                SaveSongs.Enabled = true;
             }
-
+            
+        }
+        
+        private void usernameBox_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(usernameBox.Text))
+            {
+                saveUsername.Enabled = false;
+                saveUsername.Checked = false;
+                return;
+            }
+            
+            if (_configFiles["username"] == null)
+            {
+                saveUsername.Enabled = true;
+                return;
+            }
+            
+            var result = ArrayContains(_configFiles["username"].ToObject<string[]>(), usernameBox.Text);
+            saveUsername.Enabled = !result;
+            if (result && saveUsername.Checked) saveUsername.Checked = false;
+        }
+        
+        private void serverList_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(serverList.Text))
+            {
+                saveServer.Enabled = false;
+                saveServer.Checked = false;
+                return;
+            }
+            
+            var result = ArrayContains(_configFiles["links"].ToObject<string[]>(), serverList.Text);
+            saveServer.Enabled = !result;
+            if (result && saveServer.Checked) saveServer.Checked = false;
+        }
+        
+        private void SongsFolderbox_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(SongsFolderbox.Text))
+            {
+                SaveSongs.Text = "Songsフォルダの保存";
+                SaveSongs.Enabled = false;
+                SaveSongs.Checked = false;
+                return;
+            }
+            
+            if (!Directory.Exists(SongsFolderbox.Text) && SongsFolderbox.Text != "Songs")
+            {
+                SaveSongs.Text = "指定されたSongsフォルダが見つかりませんでした。";
+                SaveSongs.Enabled = false;
+                SaveSongs.Checked = false;
+                return;
+            }
+            
+            SaveSongs.Text = "Songsフォルダの保存";
+            var result = ArrayContains(_configFiles["SongsFolder"].ToObject<string[]>(), SongsFolderbox.Text);
+            SaveSongs.Enabled = !result;
+            if (result && SaveSongs.Checked) SaveSongs.Checked = false;
         }
 
-        private void button1_Click(object sender, EventArgs e) //自動取得ボタン
+        private void advancedSetting_CheckedChanged(object sender, EventArgs e)
         {
-            string processName = "osu!";
-
-            string processPath = GetProcessPath(processName);
-
-            if (!string.IsNullOrEmpty(processPath))
-            {
-                textBox1.Text = processPath.Replace(@"\osu!.exe", "");
-            }
-            else
-            {
-                MessageBox.Show("osu!.exeが見つかりませんでした。起動してからもう一度お試しください。", "エラー");
-            }
-        }
-
-        static string GetProcessPath(string processName)
-        {
-            Process[] processes = Process.GetProcessesByName(processName);
-
-            if (processes.Length > 0)
-            {
-                string processPath = processes[0].MainModule.FileName;
-                return processPath;
-            }
-
-            return null;
-        }
-
-        private void checkBox3_CheckedChanged(object sender, EventArgs e) //Songsフォルダーの変更するかどうかのチェック
-        {
-            if (checkBox3.Checked)
-            {
-                comboBox3.Enabled = true;
-                comboBox2.Enabled = true;
-                StreamReader folderReader = new StreamReader("./SongsFolder.json", Encoding.GetEncoding("Shift_JIS"));
-                string foldersdata = folderReader.ReadToEnd();
-                folderReader.Close();
-                JObject foldersarray = JObject.Parse(foldersdata);
-                string[] folderarray = foldersarray["SongsFolder"].ToObject<string[]>();
-                checkBox4.Enabled = !ArrayContains(folderarray, comboBox3.Text);
-            }
-            else
-            {
-                comboBox3.Enabled = false;
-                comboBox3.Text = "Songs";
-                checkBox4.Enabled = false;
-            }
-        }
-
-        private void comboBox3_TextChanged(object sender, EventArgs e) //Songsフォルダーの変更
-        {
-            StreamReader folderReader = new StreamReader("./SongsFolder.json", Encoding.GetEncoding("Shift_JIS"));
-            string foldersdata = folderReader.ReadToEnd();
-            folderReader.Close();
-            JObject foldersarray = JObject.Parse(foldersdata);
-            string[] folderarray = foldersarray["SongsFolder"].ToObject<string[]>();
-            checkBox4.Enabled = !ArrayContains(folderarray, comboBox3.Text);
-        }
-
-        private void checkBox5_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox5.Checked)
-            {
-                textBox2.Enabled = true;
-                textBox3.Enabled = true;
-                checkBox6.Enabled = true;
-            }
-            else
-            {
-                textBox2.Enabled = false;
-                textBox3.Enabled = false;
-                checkBox6.Enabled = false;
-            }
+            osulaunch.Location = advancedSetting.Checked ? new Point(272, 392) : new Point(180, 213);
+            Size = advancedSetting.Checked ? new Size(696, 486) : new Size(537, 302);
+            changeonlyFullscreen.Visible = advancedSetting.Checked;
+            crossResolution.Enabled = advancedSetting.Checked;
+            crossResolution.Visible = advancedSetting.Checked;
+            resolutionHeight.Visible = advancedSetting.Checked;
+            resolutionWidth.Visible = advancedSetting.Checked;
+            ResolutionText.Enabled = advancedSetting.Checked;
+            ResolutionText.Visible = advancedSetting.Checked;
+            usecustomResolution.Enabled = advancedSetting.Checked;
+            usecustomResolution.Visible = advancedSetting.Checked;
+            SaveSongs.Visible = advancedSetting.Checked;
+            SongsFolderbox.Visible = advancedSetting.Checked;
+            changeSongs.Enabled = advancedSetting.Checked;
+            changeSongs.Visible = advancedSetting.Checked;
+            configText.Enabled = advancedSetting.Checked;
+            configText.Visible = advancedSetting.Checked;
+            Config.Enabled = advancedSetting.Checked;
+            Config.Visible = advancedSetting.Checked;
+            SongsFolderText.Enabled = advancedSetting.Checked;
+            SongsFolderText.Visible = advancedSetting.Checked;
         }
     }
 }

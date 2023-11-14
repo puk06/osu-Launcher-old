@@ -1,11 +1,16 @@
-﻿namespace osu_launcher
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace osu_launcher
 {
     partial class Form1
     {
         /// <summary>
         /// 必要なデザイナー変数です。
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
@@ -23,292 +28,402 @@
         #region Windows フォーム デザイナーで生成されたコード
 
         /// <summary>
-        /// デザイナー サポートに必要なメソッドです。このメソッドの内容を
-        /// コード エディターで変更しないでください。
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.osulaunch = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.serverList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.saveServer = new System.Windows.Forms.CheckBox();
+            this.saveFolder = new System.Windows.Forms.CheckBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.osuFolderbox = new System.Windows.Forms.TextBox();
+            this.automaticDetection = new System.Windows.Forms.Button();
+            this.SongsFolderText = new System.Windows.Forms.Label();
+            this.Config = new System.Windows.Forms.ComboBox();
+            this.configText = new System.Windows.Forms.Label();
+            this.changeSongs = new System.Windows.Forms.CheckBox();
+            this.SongsFolderbox = new System.Windows.Forms.ComboBox();
+            this.SaveSongs = new System.Windows.Forms.CheckBox();
+            this.usecustomResolution = new System.Windows.Forms.CheckBox();
+            this.ResolutionText = new System.Windows.Forms.Label();
+            this.resolutionWidth = new System.Windows.Forms.TextBox();
+            this.resolutionHeight = new System.Windows.Forms.TextBox();
+            this.crossResolution = new System.Windows.Forms.Label();
+            this.changeonlyFullscreen = new System.Windows.Forms.CheckBox();
+            this.advancedSetting = new System.Windows.Forms.CheckBox();
+            this.saveUsername = new System.Windows.Forms.CheckBox();
+            this.usernameText = new System.Windows.Forms.Label();
+            this.usernameBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // osulaunch
             // 
             this.osulaunch.BackColor = System.Drawing.SystemColors.Control;
-            this.osulaunch.Font = new System.Drawing.Font("PhrasticMedium", 17.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.osulaunch.ForeColor = System.Drawing.SystemColors.ActiveBorder;
             this.osulaunch.Image = ((System.Drawing.Image)(resources.GetObject("osulaunch.Image")));
-            this.osulaunch.Location = new System.Drawing.Point(477, 287);
+            this.osulaunch.Location = new System.Drawing.Point(182, 213);
             this.osulaunch.Name = "osulaunch";
             this.osulaunch.Size = new System.Drawing.Size(178, 51);
             this.osulaunch.TabIndex = 0;
             this.osulaunch.UseVisualStyleBackColor = false;
             this.osulaunch.Click += new System.EventHandler(this.Osulaunch_pushed);
             // 
-            // comboBox1
+            // serverList
             // 
-            this.comboBox1.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(182, 12);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(260, 27);
-            this.comboBox1.TabIndex = 1;
-            this.comboBox1.TextChanged += new System.EventHandler(this.comboBox1_TextChanged);
+            this.serverList.FormattingEnabled = true;
+            this.serverList.Location = new System.Drawing.Point(182, 12);
+            this.serverList.Name = "serverList";
+            this.serverList.Size = new System.Drawing.Size(260, 20);
+            this.serverList.TabIndex = 1;
+            this.serverList.TextChanged += new System.EventHandler(this.serverList_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("MS UI Gothic", 20F);
-            this.label1.Location = new System.Drawing.Point(37, 12);
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(50, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 27);
+            this.label1.Size = new System.Drawing.Size(38, 12);
             this.label1.TabIndex = 2;
             this.label1.Text = "Server";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("MS UI Gothic", 20F);
-            this.label3.Location = new System.Drawing.Point(12, 73);
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.ForeColor = System.Drawing.Color.Black;
+            this.label3.Location = new System.Drawing.Point(25, 70);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(137, 27);
+            this.label3.Size = new System.Drawing.Size(62, 12);
             this.label3.TabIndex = 5;
             this.label3.Text = "osu! Folder";
             // 
-            // checkBox1
+            // saveServer
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(182, 45);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(98, 16);
-            this.checkBox1.TabIndex = 6;
-            this.checkBox1.Text = "サーバーの保存";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.saveServer.AutoSize = true;
+            this.saveServer.BackColor = System.Drawing.Color.Transparent;
+            this.saveServer.ForeColor = System.Drawing.Color.Black;
+            this.saveServer.Location = new System.Drawing.Point(182, 45);
+            this.saveServer.Name = "saveServer";
+            this.saveServer.Size = new System.Drawing.Size(98, 16);
+            this.saveServer.TabIndex = 6;
+            this.saveServer.Text = "サーバーの保存";
+            this.saveServer.UseVisualStyleBackColor = false;
             // 
-            // checkBox2
+            // saveFolder
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(182, 106);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(93, 16);
-            this.checkBox2.TabIndex = 7;
-            this.checkBox2.Text = "フォルダの保存";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.saveFolder.AutoSize = true;
+            this.saveFolder.BackColor = System.Drawing.Color.Transparent;
+            this.saveFolder.ForeColor = System.Drawing.Color.Black;
+            this.saveFolder.Location = new System.Drawing.Point(182, 106);
+            this.saveFolder.Name = "saveFolder";
+            this.saveFolder.Size = new System.Drawing.Size(93, 16);
+            this.saveFolder.TabIndex = 7;
+            this.saveFolder.Text = "フォルダの保存";
+            this.saveFolder.UseVisualStyleBackColor = false;
             // 
-            // textBox1
+            // osuFolderbox
             // 
-            this.textBox1.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox1.Location = new System.Drawing.Point(182, 73);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(260, 27);
-            this.textBox1.TabIndex = 8;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.osuFolderbox.Location = new System.Drawing.Point(182, 73);
+            this.osuFolderbox.Name = "osuFolderbox";
+            this.osuFolderbox.Size = new System.Drawing.Size(260, 19);
+            this.osuFolderbox.TabIndex = 8;
+            this.osuFolderbox.TextChanged += new System.EventHandler(this.osuFolderbox_TextChanged);
             // 
-            // button1
+            // automaticDetection
             // 
-            this.button1.Location = new System.Drawing.Point(448, 73);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(68, 27);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "自動検出";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.automaticDetection.Location = new System.Drawing.Point(448, 73);
+            this.automaticDetection.Name = "automaticDetection";
+            this.automaticDetection.Size = new System.Drawing.Size(68, 27);
+            this.automaticDetection.TabIndex = 9;
+            this.automaticDetection.Text = "自動検出";
+            this.automaticDetection.UseVisualStyleBackColor = true;
+            this.automaticDetection.Click += new System.EventHandler(this.automaticDetection_Click);
             // 
-            // label2
+            // SongsFolderText
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("MS UI Gothic", 20F);
-            this.label2.Location = new System.Drawing.Point(12, 182);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(159, 27);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "Songs Folder";
+            this.SongsFolderText.AutoSize = true;
+            this.SongsFolderText.BackColor = System.Drawing.Color.Transparent;
+            this.SongsFolderText.Enabled = false;
+            this.SongsFolderText.ForeColor = System.Drawing.Color.Black;
+            this.SongsFolderText.Location = new System.Drawing.Point(16, 244);
+            this.SongsFolderText.Name = "SongsFolderText";
+            this.SongsFolderText.Size = new System.Drawing.Size(72, 12);
+            this.SongsFolderText.TabIndex = 10;
+            this.SongsFolderText.Text = "Songs Folder";
+            this.SongsFolderText.Visible = false;
             // 
-            // comboBox2
+            // Config
             // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(492, 182);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(177, 27);
-            this.comboBox2.TabIndex = 11;
+            this.Config.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Config.Enabled = false;
+            this.Config.FormattingEnabled = true;
+            this.Config.Location = new System.Drawing.Point(479, 246);
+            this.Config.Name = "Config";
+            this.Config.Size = new System.Drawing.Size(177, 20);
+            this.Config.TabIndex = 11;
+            this.Config.Visible = false;
             // 
-            // label4
+            // configText
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("MS UI Gothic", 20F);
-            this.label4.Location = new System.Drawing.Point(406, 182);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(80, 27);
-            this.label4.TabIndex = 13;
-            this.label4.Text = "config";
+            this.configText.AutoSize = true;
+            this.configText.BackColor = System.Drawing.Color.Transparent;
+            this.configText.Enabled = false;
+            this.configText.ForeColor = System.Drawing.Color.Black;
+            this.configText.Location = new System.Drawing.Point(525, 208);
+            this.configText.Name = "configText";
+            this.configText.Size = new System.Drawing.Size(36, 12);
+            this.configText.TabIndex = 13;
+            this.configText.Text = "Config";
+            this.configText.Visible = false;
             // 
-            // checkBox3
+            // changeSongs
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(182, 160);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(152, 16);
-            this.checkBox3.TabIndex = 14;
-            this.checkBox3.Text = "Songsフォルダーを変更する";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            this.changeSongs.AutoSize = true;
+            this.changeSongs.BackColor = System.Drawing.Color.Transparent;
+            this.changeSongs.Enabled = false;
+            this.changeSongs.ForeColor = System.Drawing.Color.Black;
+            this.changeSongs.Location = new System.Drawing.Point(182, 226);
+            this.changeSongs.Name = "changeSongs";
+            this.changeSongs.Size = new System.Drawing.Size(152, 16);
+            this.changeSongs.TabIndex = 14;
+            this.changeSongs.Text = "Songsフォルダーを変更する";
+            this.changeSongs.UseVisualStyleBackColor = false;
+            this.changeSongs.Visible = false;
+            this.changeSongs.CheckedChanged += new System.EventHandler(this.changeSongs_CheckedChanged);
             // 
-            // comboBox3
+            // SongsFolderbox
             // 
-            this.comboBox3.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(182, 182);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(206, 27);
-            this.comboBox3.TabIndex = 15;
-            this.comboBox3.TextChanged += new System.EventHandler(this.comboBox3_TextChanged);
+            this.SongsFolderbox.Enabled = false;
+            this.SongsFolderbox.FormattingEnabled = true;
+            this.SongsFolderbox.Location = new System.Drawing.Point(182, 248);
+            this.SongsFolderbox.Name = "SongsFolderbox";
+            this.SongsFolderbox.Size = new System.Drawing.Size(261, 20);
+            this.SongsFolderbox.TabIndex = 15;
+            this.SongsFolderbox.Visible = false;
+            this.SongsFolderbox.TextChanged += new System.EventHandler(this.SongsFolderbox_TextChanged);
             // 
-            // checkBox4
+            // SaveSongs
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(182, 215);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(124, 16);
-            this.checkBox4.TabIndex = 16;
-            this.checkBox4.Text = "Songsフォルダの保存";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.SaveSongs.AutoSize = true;
+            this.SaveSongs.BackColor = System.Drawing.Color.Transparent;
+            this.SaveSongs.Enabled = false;
+            this.SaveSongs.ForeColor = System.Drawing.Color.Black;
+            this.SaveSongs.Location = new System.Drawing.Point(182, 281);
+            this.SaveSongs.Name = "SaveSongs";
+            this.SaveSongs.Size = new System.Drawing.Size(124, 16);
+            this.SaveSongs.TabIndex = 16;
+            this.SaveSongs.Text = "Songsフォルダの保存";
+            this.SaveSongs.UseVisualStyleBackColor = false;
+            this.SaveSongs.Visible = false;
             // 
-            // checkBox5
+            // usecustomResolution
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(181, 275);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(130, 16);
-            this.checkBox5.TabIndex = 17;
-            this.checkBox5.Text = "カスタム解像度の使用";
-            this.checkBox5.UseVisualStyleBackColor = true;
-            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            this.usecustomResolution.AutoSize = true;
+            this.usecustomResolution.BackColor = System.Drawing.Color.Transparent;
+            this.usecustomResolution.Enabled = false;
+            this.usecustomResolution.ForeColor = System.Drawing.Color.Black;
+            this.usecustomResolution.Location = new System.Drawing.Point(182, 309);
+            this.usecustomResolution.Name = "usecustomResolution";
+            this.usecustomResolution.Size = new System.Drawing.Size(130, 16);
+            this.usecustomResolution.TabIndex = 17;
+            this.usecustomResolution.Text = "カスタム解像度の使用";
+            this.usecustomResolution.UseVisualStyleBackColor = false;
+            this.usecustomResolution.Visible = false;
+            this.usecustomResolution.CheckedChanged += new System.EventHandler(this.usecustomResolution_CheckedChanged);
             // 
-            // label5
+            // ResolutionText
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("MS UI Gothic", 20F);
-            this.label5.Location = new System.Drawing.Point(17, 297);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(132, 27);
-            this.label5.TabIndex = 18;
-            this.label5.Text = "Resolution";
+            this.ResolutionText.AutoSize = true;
+            this.ResolutionText.BackColor = System.Drawing.Color.Transparent;
+            this.ResolutionText.Enabled = false;
+            this.ResolutionText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ResolutionText.ForeColor = System.Drawing.Color.Black;
+            this.ResolutionText.Location = new System.Drawing.Point(31, 341);
+            this.ResolutionText.Name = "ResolutionText";
+            this.ResolutionText.Size = new System.Drawing.Size(59, 12);
+            this.ResolutionText.TabIndex = 18;
+            this.ResolutionText.Text = "Resolution";
+            this.ResolutionText.Visible = false;
             // 
-            // textBox2
+            // resolutionWidth
             // 
-            this.textBox2.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox2.Location = new System.Drawing.Point(181, 297);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(110, 27);
-            this.textBox2.TabIndex = 19;
+            this.resolutionWidth.Enabled = false;
+            this.resolutionWidth.Location = new System.Drawing.Point(182, 346);
+            this.resolutionWidth.Name = "resolutionWidth";
+            this.resolutionWidth.Size = new System.Drawing.Size(110, 19);
+            this.resolutionWidth.TabIndex = 19;
+            this.resolutionWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.resolutionWidth.Visible = false;
             // 
-            // textBox3
+            // resolutionHeight
             // 
-            this.textBox3.Font = new System.Drawing.Font("HackGen", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox3.Location = new System.Drawing.Point(332, 297);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(110, 27);
-            this.textBox3.TabIndex = 20;
+            this.resolutionHeight.Enabled = false;
+            this.resolutionHeight.Location = new System.Drawing.Point(333, 347);
+            this.resolutionHeight.Name = "resolutionHeight";
+            this.resolutionHeight.Size = new System.Drawing.Size(110, 19);
+            this.resolutionHeight.TabIndex = 20;
+            this.resolutionHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.resolutionHeight.Visible = false;
             // 
-            // label6
+            // crossResolution
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Noto Sans JP", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label6.Location = new System.Drawing.Point(295, 295);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(33, 29);
-            this.label6.TabIndex = 21;
-            this.label6.Text = "×";
+            this.crossResolution.AutoSize = true;
+            this.crossResolution.BackColor = System.Drawing.Color.Transparent;
+            this.crossResolution.Enabled = false;
+            this.crossResolution.ForeColor = System.Drawing.Color.Black;
+            this.crossResolution.Location = new System.Drawing.Point(299, 346);
+            this.crossResolution.Name = "crossResolution";
+            this.crossResolution.Size = new System.Drawing.Size(17, 12);
+            this.crossResolution.TabIndex = 21;
+            this.crossResolution.Text = "×";
+            this.crossResolution.Visible = false;
             // 
-            // checkBox6
+            // changeonlyFullscreen
             // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(180, 330);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(131, 16);
-            this.checkBox6.TabIndex = 22;
-            this.checkBox6.Text = "フルスクリーン時の変更";
-            this.checkBox6.UseVisualStyleBackColor = true;
+            this.changeonlyFullscreen.AutoSize = true;
+            this.changeonlyFullscreen.BackColor = System.Drawing.Color.Transparent;
+            this.changeonlyFullscreen.Enabled = false;
+            this.changeonlyFullscreen.ForeColor = System.Drawing.Color.Black;
+            this.changeonlyFullscreen.Location = new System.Drawing.Point(182, 327);
+            this.changeonlyFullscreen.Name = "changeonlyFullscreen";
+            this.changeonlyFullscreen.Size = new System.Drawing.Size(131, 16);
+            this.changeonlyFullscreen.TabIndex = 22;
+            this.changeonlyFullscreen.Text = "フルスクリーン時の変更";
+            this.changeonlyFullscreen.UseVisualStyleBackColor = false;
+            this.changeonlyFullscreen.Visible = false;
+            // 
+            // advancedSetting
+            // 
+            this.advancedSetting.AutoSize = true;
+            this.advancedSetting.BackColor = System.Drawing.Color.Transparent;
+            this.advancedSetting.ForeColor = System.Drawing.Color.Black;
+            this.advancedSetting.Location = new System.Drawing.Point(182, 185);
+            this.advancedSetting.Name = "advancedSetting";
+            this.advancedSetting.Size = new System.Drawing.Size(72, 16);
+            this.advancedSetting.TabIndex = 23;
+            this.advancedSetting.Text = "詳細設定";
+            this.advancedSetting.UseVisualStyleBackColor = false;
+            this.advancedSetting.CheckedChanged += new System.EventHandler(this.advancedSetting_CheckedChanged);
+            // 
+            // saveUsername
+            // 
+            this.saveUsername.AutoSize = true;
+            this.saveUsername.BackColor = System.Drawing.Color.Transparent;
+            this.saveUsername.ForeColor = System.Drawing.Color.Black;
+            this.saveUsername.Location = new System.Drawing.Point(182, 165);
+            this.saveUsername.Name = "saveUsername";
+            this.saveUsername.Size = new System.Drawing.Size(110, 16);
+            this.saveUsername.TabIndex = 26;
+            this.saveUsername.Text = "ユーザー名の保存";
+            this.saveUsername.UseVisualStyleBackColor = false;
+            // 
+            // usernameText
+            // 
+            this.usernameText.AutoSize = true;
+            this.usernameText.BackColor = System.Drawing.Color.Transparent;
+            this.usernameText.ForeColor = System.Drawing.Color.Black;
+            this.usernameText.Location = new System.Drawing.Point(30, 130);
+            this.usernameText.Name = "usernameText";
+            this.usernameText.Size = new System.Drawing.Size(56, 12);
+            this.usernameText.TabIndex = 25;
+            this.usernameText.Text = "Username";
+            // 
+            // usernameBox
+            // 
+            this.usernameBox.FormattingEnabled = true;
+            this.usernameBox.Location = new System.Drawing.Point(182, 132);
+            this.usernameBox.Name = "usernameBox";
+            this.usernameBox.Size = new System.Drawing.Size(260, 20);
+            this.usernameBox.TabIndex = 24;
+            this.usernameBox.TextChanged += new System.EventHandler(this.usernameBox_TextChanged);
             // 
             // Form1
             // 
+            this.usernameBox.Font = new System.Drawing.Font(_fontCollection.Families[0], 10F);
+            this.usernameText.Font = new System.Drawing.Font(_fontCollection.Families[1], 17F);
+            this.crossResolution.Font = new System.Drawing.Font(_fontCollection.Families[0], 15F);
+            this.resolutionHeight.Font = new System.Drawing.Font(_fontCollection.Families[0], 10F);
+            this.resolutionWidth.Font = new System.Drawing.Font(_fontCollection.Families[0], 10F);
+            this.ResolutionText.Font = new System.Drawing.Font(_fontCollection.Families[1], 17F);
+            this.SongsFolderbox.Font = new System.Drawing.Font(_fontCollection.Families[0], 10F);
+            this.configText.Font = new System.Drawing.Font(_fontCollection.Families[1], 17F);
+            this.Config.Font = new System.Drawing.Font(_fontCollection.Families[0], 12F);
+            this.SongsFolderText.Font = new System.Drawing.Font(_fontCollection.Families[1], 17F);
+            this.osuFolderbox.Font = new System.Drawing.Font(_fontCollection.Families[0], 10F);
+            this.label3.Font = new System.Drawing.Font(_fontCollection.Families[1], 17F);
+            this.label1.Font = new System.Drawing.Font(_fontCollection.Families[1], 17F);
+            this.serverList.Font = new System.Drawing.Font(_fontCollection.Families[0], 10F);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(691, 385);
-            this.Controls.Add(this.checkBox6);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.checkBox5);
-            this.Controls.Add(this.checkBox4);
-            this.Controls.Add(this.comboBox3);
-            this.Controls.Add(this.checkBox3);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
+            this.ClientSize = new System.Drawing.Size(533, 277);
+            this.Controls.Add(this.saveUsername);
+            this.Controls.Add(this.usernameText);
+            this.Controls.Add(this.usernameBox);
+            this.Controls.Add(this.advancedSetting);
+            this.Controls.Add(this.automaticDetection);
+            this.Controls.Add(this.osuFolderbox);
+            this.Controls.Add(this.saveFolder);
+            this.Controls.Add(this.saveServer);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.serverList);
             this.Controls.Add(this.osulaunch);
+            this.Controls.Add(this.changeonlyFullscreen);
+            this.Controls.Add(this.crossResolution);
+            this.Controls.Add(this.resolutionHeight);
+            this.Controls.Add(this.resolutionWidth);
+            this.Controls.Add(this.ResolutionText);
+            this.Controls.Add(this.usecustomResolution);
+            this.Controls.Add(this.SaveSongs);
+            this.Controls.Add(this.SongsFolderbox);
+            this.Controls.Add(this.changeSongs);
+            this.Controls.Add(this.configText);
+            this.Controls.Add(this.Config);
+            this.Controls.Add(this.SongsFolderText);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "osu! Launcher";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
-        private System.Windows.Forms.Button osulaunch;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private Button osulaunch;
+        private System.Windows.Forms.ComboBox serverList;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBox6;
+        private CheckBox saveServer;
+        private CheckBox saveFolder;
+        private FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.TextBox osuFolderbox;
+        private Button automaticDetection;
+        private System.Windows.Forms.Label SongsFolderText;
+        private ComboBox Config;
+        private System.Windows.Forms.Label configText;
+        private CheckBox changeSongs;
+        private System.Windows.Forms.ComboBox SongsFolderbox;
+        private CheckBox SaveSongs;
+        private CheckBox usecustomResolution;
+        private System.Windows.Forms.Label ResolutionText;
+        private System.Windows.Forms.TextBox resolutionWidth;
+        private System.Windows.Forms.TextBox resolutionHeight;
+        private Label crossResolution;
+        private CheckBox changeonlyFullscreen;
+        private CheckBox advancedSetting;
+        private CheckBox saveUsername;
+        private System.Windows.Forms.Label usernameText;
+        private ComboBox usernameBox;
     }
 }
 
